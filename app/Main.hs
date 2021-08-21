@@ -12,4 +12,4 @@ import Day8 (day8a, day8b)
 import Day9 (day9a, day9b)
 
 main :: IO ()
-main = readFile "input/6.input" >>= (print . day6a)
+main = readFile "input/7.input" >>= (print . day7b)
