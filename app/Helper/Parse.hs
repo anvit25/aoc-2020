@@ -16,7 +16,7 @@ anycharP :: [Char] -> Parser Char
 anycharP = Char.oneOf
 
 charP :: Char -> Parser Char
-charP x = Char.oneOf [x]
+charP x = anycharP [x]
 
 stringP :: String -> Parser String
 stringP = traverse charP
