@@ -1,8 +1,6 @@
 module Day8 (day8a, day8b) where
 
 import Data.Either (rights)
--- import Data.IntMap ((!), (!?))
--- import qualified Data.IntMap as IM
 import Data.Maybe (mapMaybe)
 import Data.Sequence ((!?))
 import qualified Data.Sequence as DS
@@ -16,10 +14,7 @@ type Ins = (Command, Int)
 
 type Program = DS.Seq Ins
 
-type State =
-  ( Int, -- Position of pointer
-    Int -- Accumalator
-  )
+type State = (Int, Int) -- Position of pointer, Accumalator
 
 day8a :: String -> Either PError (Either Int Int)
 day8a xs = runProg <$> parse parseProg xs
