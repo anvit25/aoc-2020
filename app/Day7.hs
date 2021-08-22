@@ -33,8 +33,7 @@ containShinyGold bags f bag = case contains !? "shiny gold" of
 containShinyGold' :: Bags -> Bag -> Bool
 containShinyGold' bags = fix (memoize . containShinyGold bags)
 
--- PARSING --
-
+----- PARSING -------
 parseFile :: Parser Bags
 parseFile = fromList <$> multiple parseLine
 
