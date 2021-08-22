@@ -1,9 +1,11 @@
 module Day8 (day8a, day8b) where
 
 import Data.Either (rights)
-import Data.IntMap ((!), (!?))
-import qualified Data.IntMap as IM
+-- import Data.IntMap ((!), (!?))
+-- import qualified Data.IntMap as IM
 import Data.Maybe (mapMaybe)
+import Data.Sequence ((!?))
+import qualified Data.Sequence as DS
 import Helper.Parse
 import Text.Parsec (space)
 
@@ -12,7 +14,7 @@ data Command = NOP | ACC | JMP
 
 type Ins = (Command, Int)
 
-type Program = IM.IntMap Ins
+type Program = DS.Seq Ins
 
 type State =
   ( Int, -- Position of pointer
@@ -22,10 +24,10 @@ type State =
 day8a :: String -> Either PError (Either Int Int)
 day8a xs = runProg <$> parse parseProg xs
 
-day8b :: String -> Either PError [Int]
+day8b :: String -> Either PError Int
 day8b xs = do
   prog <- parse parseProg xs
-  return . rights . map runProg . newProgs $ prog
+  return . head . rights . map runProg . newProgs $ prog
 
 -- Compute the next position of pointer
 -- Return Nothing in case current position
@@ -44,20 +46,20 @@ nextState m (curr, acc) = f <$> m !? curr
 runProg :: Program -> Either Int Int
 runProg prog = runTillReporTerm prog visited (0, 0)
   where
-    visited = IM.fromList $ zip [0 .. length prog - 1] [0, 0 ..]
+    visited = DS.fromList $ take (length prog) [0, 0 ..]
 
 -- Helper for runProg, run the program from a given state and
 -- visited map
-runTillReporTerm :: Program -> IM.IntMap Int -> State -> Either Int Int
+runTillReporTerm :: Program -> DS.Seq Int -> State -> Either Int Int
 runTillReporTerm prog visited (curr, acc) = case newstate of
   Nothing -> Right acc
   Just state ->
-    if visited ! curr > 0
+    if DS.index visited curr > 0
       then Left acc
       else runTillReporTerm prog newVisited state
   where
     newstate = nextState prog (curr, acc)
-    newVisited = IM.adjust (+ 1) curr visited
+    newVisited = DS.adjust (+ 1) curr visited
 
 -- Creates a list of new programs, changing JMP
 -- to NOP and vice verse. Each new program is exactly
@@ -66,13 +68,13 @@ newProgs :: Program -> [Program]
 newProgs prog = mapMaybe (modify prog) [0 .. length prog - 1]
   where
     modify :: Program -> Int -> Maybe Program
-    modify prog i = case prog ! i of
+    modify prog i = case DS.index prog i of
       (ACC, x) -> Nothing
-      (JMP, x) -> Just $ IM.insert i (NOP, x) prog
-      (NOP, x) -> Just $ IM.insert i (JMP, x) prog
+      (JMP, x) -> Just $ DS.update i (NOP, x) prog
+      (NOP, x) -> Just $ DS.update i (JMP, x) prog
 
 parseIns :: Parser Ins
 parseIns = (,) <$> (enumP <* space) <*> (integer <* space)
 
 parseProg :: Parser Program
-parseProg = IM.fromList . zip [0 ..] <$> multiple parseIns <* eof
+parseProg = DS.fromList <$> multiple parseIns <* eof
