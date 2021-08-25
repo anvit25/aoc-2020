@@ -4,6 +4,14 @@ import Control.Applicative (Alternative ((<|>)))
 import Data.List (find)
 import Data.Maybe (fromJust)
 
+instance (Num a, Num b) => Num (a, b) where
+  (a, b) + (c, d) = (a + c, b + d)
+  (a, b) * (c, d) = (a * c, b * d)
+  abs (c, d) = (abs c, abs d)
+  signum (c, d) = (signum c, signum d)
+  fromInteger a = (fromInteger a, 0)
+  negate (c, d) = (- c, - d)
+
 countIf :: (a -> Bool) -> [a] -> Int
 countIf x = length . filter x
 
