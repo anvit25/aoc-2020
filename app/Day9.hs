@@ -2,7 +2,6 @@ module Day9 (day9a, day9b) where
 
 import Control.Applicative (liftA2)
 import Data.List (elemIndex, tails)
-import Data.Maybe (fromJust, mapMaybe)
 import Helper.Misc
 
 preSize :: Int
@@ -35,5 +34,5 @@ isValid xs = (length ys < preSize) || finder y ys
     y = xs !! preSize
 
 finder :: Int -> [Int] -> Bool
-finder n [] = False
+finder _ [] = False
 finder n (x : xs) = (n - x `elem` xs) || finder n xs

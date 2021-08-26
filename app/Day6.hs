@@ -1,16 +1,18 @@
 module Day6 (day6a, day6b) where
 
+import Data.Either (fromRight)
 import qualified Data.Set as Set
 import Helper.Parse
 import Text.Parsec (noneOf, sepBy)
 
-day6a :: String -> Either PError Int
-day6a xs = sum . map (length . makeset) <$> parse planeP xs
+day6a :: String -> Int
+day6a xs = fromRight 0 $ sum . map (length . makeset) <$> parse planeP xs
 
-day6b :: String -> Either PError Int
+day6b :: String -> Int
 day6b xs =
-  sum . map groupfault
-    <$> parse planeP xs
+  fromRight 0 $
+    sum . map groupfault
+      <$> parse planeP xs
   where
     groupfault = length . foldr1 Set.intersection . map Set.fromList
 

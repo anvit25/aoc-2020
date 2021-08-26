@@ -1,24 +1,25 @@
 module Day7 (day7a, day7b) where
 
 import Control.Applicative ((<|>))
+import Data.Either (fromRight)
 import Data.Function (fix)
 import Data.Function.Memoize (memoize)
 import Data.Map.Strict (Map, empty, fromList, keys, mapWithKey, (!), (!?))
 import Helper.Misc (countIf)
 import Helper.Parse
-import Text.Parsec (many, option, sepBy, space)
+import Text.Parsec (many, sepBy, space)
 
 type Bag = String
 
 type Bags = Map Bag (Map Bag Int)
 
-day7a :: String -> Either PError Int
-day7a xs = do
+day7a :: String -> Int
+day7a xs = fromRight 0 $ do
   bags <- parse parseFile xs
   return . countIf (containShinyGold' bags) $ keys bags
 
-day7b :: String -> Either PError Int
-day7b xs = countBag "shiny gold" <$> parse parseFile xs
+day7b :: String -> Int
+day7b xs = fromRight 0 $ countBag "shiny gold" <$> parse parseFile xs
 
 countBag :: Bag -> Bags -> Int
 countBag x bags = sum . mapWithKey (\k a -> a * (1 + countBag k bags)) $ bags ! x
@@ -55,5 +56,5 @@ containsP = do
   n <- integer <* space
   adj <- multiple letter <* space
   col <- multiple letter
-  stringP " bag" *> many (charP 's')
+  _ <- stringP " bag" *> many (charP 's')
   return (unwords [adj, col], n)

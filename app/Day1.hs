@@ -5,14 +5,14 @@ module Day1
 where
 
 import Data.List (tails)
-import Data.Maybe (mapMaybe)
+import Data.Maybe (fromJust)
 import Helper.Misc
 
 n :: Int
 n = 2020
 
-day1a :: String -> Maybe Int
-day1a = (product <$>) . finder n . parseFile
+day1a :: String -> Int
+day1a = fromJust . (product <$>) . finder n . parseFile
 
 day1b :: String -> Int
 day1b = firstJust' (f n) . tails . parseFile

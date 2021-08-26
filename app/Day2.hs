@@ -4,6 +4,7 @@ module Day2
   )
 where
 
+import Data.Either (fromRight)
 import Data.Function (on)
 import Helper.Misc (countIf)
 import Helper.Parse
@@ -13,11 +14,11 @@ type Rule = (Int, Int, Char, String)
 parsefile :: String -> Either PError [Rule]
 parsefile = mapM (parse p) . lines
 
-day2a :: String -> Either PError Int
-day2a = (countIf isValid <$>) . parsefile
+day2a :: String -> Int
+day2a = fromRight 0 . (countIf isValid <$>) . parsefile
 
-day2b :: String -> Either PError Int
-day2b = (countIf isValid2 <$>) . parsefile
+day2b :: String -> Int
+day2b = fromRight 0 . (countIf isValid2 <$>) . parsefile
 
 p :: Parser Rule
 p = do

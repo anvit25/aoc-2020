@@ -1,15 +1,12 @@
 {-# LANGUAGE TupleSections #-}
 
--- module Day11 (day11a, day11b) where
-module Day11 where
+module Day11 (day11a, day11b) where
 
 import Control.Applicative (liftA2)
 import Data.Map.Strict ((!), (!?))
 import qualified Data.Map.Strict as M
 import Data.Maybe (mapMaybe)
-import qualified Data.Sequence as DS
 import Helper.Misc (countIf)
-import Text.Parsec (space)
 
 data Piece
   = F -- (F)loor
@@ -36,8 +33,6 @@ day11b =
     . liftA2 zip id tail
     . iterate nextBoard2
     . boardP
-
--- day11b = iterate nextBoard2 . boardP
 
 getNewPiece :: [Piece] -> Piece -> Piece
 getNewPiece xs E =

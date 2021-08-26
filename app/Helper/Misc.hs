@@ -46,3 +46,6 @@ find' = (fromJust .) . find
 
 parseFile :: (Read a) => String -> [a]
 parseFile = map read . lines
+
+(<$*>) :: (a -> c, b -> d) -> (a, b) -> (c, d)
+(f, g) <$*> (a, b) = (f a, g b)

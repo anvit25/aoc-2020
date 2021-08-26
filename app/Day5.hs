@@ -1,6 +1,7 @@
 module Day5 (day5a, day5b) where
 
 import Control.Applicative ((<|>))
+import Data.Either (fromRight)
 import Data.List ((\\))
 import Helper.Misc
 import Helper.Parse
@@ -11,11 +12,11 @@ type Boarding = (Int, Int)
 getseatIDs :: String -> Either PError [Int]
 getseatIDs = mapM (parse (boardtoID <$> boardP)) . lines
 
-day5a :: String -> Either PError Int
-day5a = fmap maximum . getseatIDs
+day5a :: String -> Int
+day5a = either (const 0) maximum . getseatIDs
 
-day5b :: String -> Either PError [Int]
-day5b xs = do
+day5b :: String -> Int
+day5b xs = head . fromRight [] $ do
   seatIds <- getseatIDs xs
   let l = minimum seatIds
   let u = maximum seatIds

@@ -1,6 +1,6 @@
 module Day8 (day8a, day8b) where
 
-import Data.Either (rights)
+import Data.Either (fromLeft, fromRight, rights)
 import Data.Maybe (mapMaybe)
 import Data.Sequence ((!?))
 import qualified Data.Sequence as DS
@@ -16,11 +16,11 @@ type Program = DS.Seq Ins
 
 type State = (Int, Int) -- Position of pointer, Accumalator
 
-day8a :: String -> Either PError (Either Int Int)
-day8a xs = runProg <$> parse parseProg xs
+day8a :: String -> Int
+day8a xs = fromLeft 0 . fromRight (Left 0) $ runProg <$> parse parseProg xs
 
-day8b :: String -> Either PError Int
-day8b xs = do
+day8b :: String -> Int
+day8b xs = fromRight 0 $ do
   prog <- parse parseProg xs
   return . head . rights . map runProg . newProgs $ prog
 
@@ -33,7 +33,7 @@ nextState m (curr, acc) = f <$> m !? curr
     f y = case y of
       (ACC, x) -> (curr + 1, acc + x)
       (JMP, x) -> (curr + x, acc)
-      (NOP, x) -> (curr + 1, acc)
+      (NOP, _) -> (curr + 1, acc)
 
 -- Run the program till it either terminate or Repeats
 -- Left corresponds to Repetition while
@@ -63,10 +63,10 @@ newProgs :: Program -> [Program]
 newProgs prog = mapMaybe (modify prog) [0 .. length prog - 1]
   where
     modify :: Program -> Int -> Maybe Program
-    modify prog i = case DS.index prog i of
-      (ACC, x) -> Nothing
-      (JMP, x) -> Just $ DS.update i (NOP, x) prog
-      (NOP, x) -> Just $ DS.update i (JMP, x) prog
+    modify prog' i = case DS.index prog' i of
+      (ACC, _) -> Nothing
+      (JMP, x) -> Just $ DS.update i (NOP, x) prog'
+      (NOP, x) -> Just $ DS.update i (JMP, x) prog'
 
 parseIns :: Parser Ins
 parseIns = (,) <$> (enumP <* space) <*> (integer <* space)

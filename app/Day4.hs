@@ -1,10 +1,10 @@
 module Day4 (day4a, day4b) where
 
 import Data.Char (isDigit, isHexDigit)
-import Data.List (groupBy)
+import Data.Either (fromRight)
 import Helper.Misc (countIf, isBetween, (<&&>))
 import Helper.Parse
-import Text.Parsec (eof, sepBy)
+import Text.Parsec (sepBy)
 import Text.Parsec.Char (noneOf)
 
 data Field
@@ -18,13 +18,13 @@ data Field
   | Hgt
   deriving (Show, Eq, Ord, Enum, Bounded)
 
-day4a :: String -> Either PError Int
-day4a xs = do
+day4a :: String -> Int
+day4a xs = fromRight 0 $ do
   book <- parse bookP xs
   return . countIf allFields $ book
 
-day4b :: String -> Either PError Int
-day4b xs = do
+day4b :: String -> Int
+day4b xs = fromRight 0 $ do
   book <- parse bookP xs
   return
     . countIf (all fieldValid <&&> allFields)
@@ -57,4 +57,4 @@ fieldValid (Hcl, '#' : xs) = (length xs == 6) && all isHexDigit xs
 fieldValid (Hcl, _) = False
 fieldValid (Ecl, xs) = xs `elem` ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
 fieldValid (Pid, xs) = (length xs == 9) && all isDigit xs
-fieldValid (Cid, xs) = True
+fieldValid (Cid, _) = True
