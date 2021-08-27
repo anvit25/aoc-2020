@@ -1,29 +1,38 @@
-module Day15 (day15a, day15b) where
+module Day15 where
 
-import Data.IntMap ((!?))
-import qualified Data.IntMap.Strict as IM
+import Control.Monad (zipWithM_)
+import Control.Monad.ST (ST, runST)
 import Data.List.Split (splitOn)
-import Helper.Misc (find')
+import qualified Data.Vector.Unboxed.Mutable as MV
 
-type Book = IM.IntMap Int
+day15a :: String -> Int
+day15a xs = snd $
+  runST $ do
+    mybook <- MV.new 3000 :: ST s (MV.MVector s Int)
+    let starting = map read . splitOn "," $ init xs
+    let turn = length starting
+    zipWithM_ (MV.write mybook) starting [1 ..]
 
-day15a xs = (\(_, b, _) -> b) . find' (\(a, _, _) -> a == 2020) $ iterate next (startturn, last starting, startbook)
-  where
-    starting = map read . splitOn "," $ init xs
-    startbook = IM.fromList $ zip starting [1 ..]
-    startturn = length starting
+    next (2020 - turn) mybook (turn, last starting)
 
-day15b xs = (\(_, b, _) -> b) . find' (\(a, _, _) -> a == 30000000) $ iterate next (startturn, last starting, startbook)
-  where
-    starting = map read . splitOn "," $ init xs
-    startbook = IM.fromList $ zip starting [1 ..]
-    startturn = length starting
+day15b :: String -> Int
+day15b xs = snd $
+  runST $ do
+    mybook <- MV.new 30000000 :: ST s (MV.MVector s Int)
+    let starting = map read . splitOn "," $ init xs
+    let turn = length starting
+    zipWithM_ (MV.write mybook) starting [1 ..]
+
+    next (30000000 - turn) mybook (turn, last starting)
 
 next ::
-  (Int, Int, Book) -> -- (Turn number, Last spoken, book)
-  (Int, Int, Book) -- (Turn number, Number spoken, Book)
-next (n, s, book) = case prev of
-  Just y -> (n + 1, n - y, IM.insert s n book)
-  Nothing -> (n + 1, 0, IM.insert s n book)
-  where
-    prev = book !? s
+  Int ->
+  MV.MVector s Int ->
+  (Int, Int) -> -- (Turn number, Last spoken)
+  ST s (Int, Int) -- (Turn number, Number spoken)
+next 0 _ r = return r
+next i book (n, s) = do
+  prev <- MV.read book s
+  let y = if prev == 0 then 0 else n - prev
+  MV.write book s n
+  next (i - 1) book (n + 1, y)

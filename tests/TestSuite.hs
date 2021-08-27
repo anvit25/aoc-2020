@@ -1,16 +1,20 @@
 module Main where
 
 import Day1 (day1a, day1b)
-import Day10
-import Day14
+import Day10 (day10a, day10b)
+import Day11 (day11a, day11b)
+import Day12 (day12a, day12b)
+import Day13 (day13a, day13b)
+import Day14 (day14a, day14b)
+import Day15 (day15a, day15b)
 import Day2 (day2a, day2b)
-import Day3
-import Day4
-import Day5
-import Day6
-import Day7
-import Day8
-import Day9
+import Day3 (day3a, day3b)
+import Day4 (day4a, day4b)
+import Day5 (day5a, day5b)
+import Day6 (day6a, day6b)
+import Day7 (day7a, day7b)
+import Day8 (day8a, day8b)
+import Day9 (day9a, day9b)
 import Test.Hspec (describe, hspec, it, shouldReturn)
 
 main :: IO ()
@@ -57,6 +61,23 @@ main = hspec $ do
       (day10a <$> readFile "input/10.input") `shouldReturn` 2432
       (day10b <$> readFile "input/10.input") `shouldReturn` 453551299002368
 
+  describe "Day 11-15" $ do
+    it "Day 11" $ do
+      (day11a <$> readFile "input/11.input") `shouldReturn` 2427
+      (day11b <$> readFile "input/11.input") `shouldReturn` 2199
+
+    it "Day 12" $ do
+      (day12a <$> readFile "input/12.input") `shouldReturn` 1032
+      (day12b <$> readFile "input/12.input") `shouldReturn` 156735
+
+    it "Day 13" $ do
+      (day13a <$> readFile "input/13.input") `shouldReturn` 115
+      (day13b <$> readFile "input/13.input") `shouldReturn` 756261495958122
+
     it "Day 14" $ do
       (day14a <$> readFile "input/14.input") `shouldReturn` 7477696999511
       (day14b <$> readFile "input/14.input") `shouldReturn` 3687727854171
+
+    it "Day 15" $ do
+      (day15a <$> readFile "input/15.input") `shouldReturn` 1009
+      (day15b <$> readFile "input/15.input") `shouldReturn` 62714

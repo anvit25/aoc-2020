@@ -46,12 +46,12 @@ allFields :: [(Field, String)] -> Bool
 allFields = (== 7) . length . filter ((/= Cid) . fst)
 
 fieldValid :: (Field, String) -> Bool
-fieldValid (Byr, xs) = isBetween 1920 2002 $ read xs
-fieldValid (Iyr, xs) = isBetween 2010 2020 $ read xs
-fieldValid (Eyr, xs) = isBetween 2020 2030 $ read xs
+fieldValid (Byr, xs) = isBetween 1920 2002 (read xs :: Int)
+fieldValid (Iyr, xs) = isBetween 2010 2020 (read xs :: Int)
+fieldValid (Eyr, xs) = isBetween 2020 2030 (read xs :: Int)
 fieldValid (Hgt, xs) = case reverse xs of
-  ('m' : 'c' : ys) -> isBetween 150 193 $ read (reverse ys)
-  ('n' : 'i' : ys) -> isBetween 59 76 $ read (reverse ys)
+  ('m' : 'c' : ys) -> isBetween 150 193 (read $ reverse ys :: Int)
+  ('n' : 'i' : ys) -> isBetween 59 76 (read $ reverse ys :: Int)
   _ -> False
 fieldValid (Hcl, '#' : xs) = (length xs == 6) && all isHexDigit xs
 fieldValid (Hcl, _) = False

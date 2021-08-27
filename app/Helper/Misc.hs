@@ -9,7 +9,7 @@ instance (Num a, Num b) => Num (a, b) where
   (a, b) * (c, d) = (a * c, b * d)
   abs (c, d) = (abs c, abs d)
   signum (c, d) = (signum c, signum d)
-  fromInteger a = (fromInteger a, 0)
+  fromInteger a = (fromInteger a, fromInteger a) -- allows (*) to be used for both scalar and vector mult
   negate (c, d) = (- c, - d)
 
 countIf :: (a -> Bool) -> [a] -> Int

@@ -3,7 +3,7 @@ module Day5 (day5a, day5b) where
 import Control.Applicative ((<|>))
 import Data.Either (fromRight)
 import Data.List ((\\))
-import Helper.Misc
+import Helper.Misc (bintodec)
 import Helper.Parse
 import Text.Parsec (count)
 

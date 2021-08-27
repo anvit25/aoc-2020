@@ -9,10 +9,10 @@ import Helper.Misc
 day10a :: String -> Int
 day10a xs = liftA2 (*) nThrees nOnes differences
   where
-    adapters = (0 :) . sort . map read $ lines xs
+    adapters = (0 :) . sort $ parseFile xs :: [Int]
     differences = zipWith (-) (tail adapters) adapters
-    nThrees = (+ 1) . countIf (== 3)
     nOnes = countIf (== 1)
+    nThrees = (+ 1) . countIf (== 3)
 
 day10b :: String -> Int
 day10b = count' . reverse . (0 :) . sort . parseFile
