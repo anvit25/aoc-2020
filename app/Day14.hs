@@ -19,7 +19,7 @@ type Memory2 = ([[Int -> Int]], IM.IntMap Int)
 day14a :: String -> Int
 day14a = sum . IM.elems . snd . foldl runCommand ([], IM.empty) . parseFile
 
--- day14b :: String -> Int
+day14b :: String -> Int
 day14b = sum . IM.elems . snd . foldl runCommand2 ([], IM.empty) . parseFile
 
 runCommand :: Memory -> Command -> Memory
